@@ -5,6 +5,37 @@
 import XCTest
 
 final class NiriScrollTrackerTests: XCTestCase {
+    func testDiscreteWheelNormalizationIgnoresAccelerationAndPreservesDirection() {
+        for delta: CGFloat in [1, 10, 120, 1200] {
+            XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+                pointDelta: delta, fixedPointDelta: 0, isContinuous: false
+            ), 120)
+            XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+                pointDelta: -delta, fixedPointDelta: 0, isContinuous: false
+            ), -120)
+            XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+                pointDelta: delta, fixedPointDelta: -1200, isContinuous: false
+            ), 120)
+            for signedDelta in [delta, -delta] {
+                XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+                    pointDelta: signedDelta, fixedPointDelta: 0, isContinuous: true
+                ), signedDelta)
+            }
+        }
+        XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+            pointDelta: 0, fixedPointDelta: -1, isContinuous: false
+        ), -120)
+        XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+            pointDelta: 0.0005, fixedPointDelta: 1, isContinuous: false
+        ), 120)
+        XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+            pointDelta: 0, fixedPointDelta: -1, isContinuous: true
+        ), -1)
+        XCTAssertEqual(MouseEventHandler.resolvedWheelAxisDelta(
+            pointDelta: 0, fixedPointDelta: 0, isContinuous: false
+        ), 0)
+    }
+
     func testWholeTickSurplusBeyondCapIsDiscarded() {
         var tracker = NiriScrollTracker(tick: 10)
 
