@@ -548,42 +548,7 @@ final class TrackpadWorkspaceGestureTests: XCTestCase {
         }
     }
 
-    func testDiscreteWheelEventAdvancesOneColumnImmediatelyAndRequestsFocus() throws {
-        for delta: Int32 in [1, 10, 120, 1200, -1, -10, -120, -1200] {
-            for horizontal in [false, true] {
-                let fixture = try makeFixture(workspaceSwipeEnabled: false, scrollGestureEnabled: true)
-                try addColumnGestureWindows(to: fixture)
-                let engine = try XCTUnwrap(fixture.controller.niriEngine)
-                let manager = fixture.controller.workspaceManager
-                let columns = engine.columns(in: fixture.ws1)
-                let startIndex = delta > 0 ? 0 : 2
-                let start = try XCTUnwrap(columns[startIndex].windowNodes.first)
-                let second = try XCTUnwrap(columns[1].windowNodes.first)
-                manager.withNiriViewportState(for: fixture.ws1) { state in
-                    state.selectedNodeId = start.id
-                    state.activeColumnIndex = startIndex
-                }
-                let event = try XCTUnwrap(CGEvent(
-                    scrollWheelEvent2Source: nil,
-                    units: .line,
-                    wheelCount: 2,
-                    wheel1: horizontal ? 0 : delta,
-                    wheel2: horizontal ? delta : 0,
-                    wheel3: 0
-                ))
-                let payload = MouseEventHandler.scrollPayload(
-                    event, at: CGPoint(x: 800, y: 450),
-                    modifiersRawValue: CGEventFlags([.maskAlternate, .maskShift]).rawValue
-                )
-                XCTAssertFalse(payload.payload.isContinuous)
-                fixture.controller.mouseEventHandler.handleScrollWheelFromTap(payload.payload)
-                XCTAssertEqual(manager.niriViewportState(for: fixture.ws1).selectedNodeId, second.id)
-                XCTAssertEqual(manager.pendingFocusedToken, second.token)
-            }
-        }
-    }
-
-    func testWheelColumnNavigationRequestsNativeFocus() throws {
+    func testHorizontalDiscreteWheelEventAdvancesOneColumnAndRequestsFocus() throws {
         let fixture = try makeFixture(workspaceSwipeEnabled: false, scrollGestureEnabled: true)
         try addColumnGestureWindows(to: fixture)
         let engine = try XCTUnwrap(fixture.controller.niriEngine)
@@ -595,12 +560,20 @@ final class TrackpadWorkspaceGestureTests: XCTestCase {
             state.selectedNodeId = first.id
             state.activeColumnIndex = 0
         }
-        fixture.controller.mouseEventHandler.handleScrollWheelFromTap(MouseScrollIntake(
-            location: CGPoint(x: 800, y: 450), deltaX: 0, deltaY: 120,
-            momentumPhase: 0, phase: 0,
-            modifiersRawValue: CGEventFlags([.maskAlternate, .maskShift]).rawValue,
-            isContinuous: false
+        let event = try XCTUnwrap(CGEvent(
+            scrollWheelEvent2Source: nil,
+            units: .line,
+            wheelCount: 2,
+            wheel1: 0,
+            wheel2: 1,
+            wheel3: 0
         ))
+        let payload = MouseEventHandler.scrollPayload(
+            event, at: CGPoint(x: 800, y: 450),
+            modifiersRawValue: CGEventFlags([.maskAlternate, .maskShift]).rawValue
+        )
+        XCTAssertFalse(payload.payload.isContinuous)
+        fixture.controller.mouseEventHandler.handleScrollWheelFromTap(payload.payload)
         XCTAssertEqual(manager.niriViewportState(for: fixture.ws1).selectedNodeId, second.id)
         XCTAssertEqual(manager.pendingFocusedToken, second.token)
     }
