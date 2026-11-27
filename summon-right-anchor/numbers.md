@@ -1,0 +1,12 @@
+- 3 C from a Dwindle workspace | head | 1 before summon | on screen: A B: A x 13..596, B x 604..1187
+- 3 C from a Dwindle workspace | head | 2 after summon | on screen: A C: A x 13..596, C x 604..1187, B x 1199..1782
+- 1 half split | head | 1 before summon | on screen: A B: A x 13..596, B x 604..1187
+- 1 half split | head | 2 after summon | on screen: A C: A x 13..596, C x 604..1187, B x 1199..1782
+- 2 minimized H between A and B | head | 1 before summon | on screen: A B: A x 13..596, H x 0..0 hidden, B x 604..1187
+- 2 minimized H between A and B | head | 2 after summon | on screen: A C: A x 13..596, H x 0..0 hidden, C x 604..1187, B x 1199..1782
+- 3 C from a Dwindle workspace | main | 1 before summon | on screen: A B: A x 13..596, B x 604..1187
+- 3 C from a Dwindle workspace | main | 2 after summon | on screen: A C: A x 13..596, C x 604..1187, B x 1199..1782
+- 1 half split | main | 1 before summon | on screen: A B: A x 13..596, B x 604..1187
+- 1 half split | main | 2 after summon | on screen: C B: A x -582..1, C x 13..596, B x 604..1187
+- 2 minimized H between A and B | main | 1 before summon | on screen: A B: A x 13..596, H x 0..0 hidden, B x 604..1187
+- 2 minimized H between A and B | main | 2 after summon | on screen: C B: A x -582..1, C x 13..596, H x 0..0 hidden, B x 604..1187
